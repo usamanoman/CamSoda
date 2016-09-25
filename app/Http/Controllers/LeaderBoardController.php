@@ -19,9 +19,18 @@ class LeaderBoardController extends Controller
      */
     public function show($id=10)
     {
-        //Find the leaders and return
-        $leaders=LeaderBoard::limit($id)->orderBy('score','desc')->get();
-        return $leaders;
+        //Validate the request params
+        $validator = Validator::make(['limit'=>$id], [
+            'limit' => 'required|numeric'
+        ]);
+        //If validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->messages(),403);
+        }else{ 
+            //Find the leaders and return
+            $leaders=LeaderBoard::limit($id)->orderBy('score','desc')->get();
+            return $leaders;
+        }
     }
 
     /**
